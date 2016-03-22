@@ -36,7 +36,7 @@ public class TWSE {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		
-		cal.add(Calendar.DAY_OF_MONTH, -1);
+		//cal.add(Calendar.DAY_OF_MONTH, -1);
 		String tradingDay = sdf.format(cal.getTime());
 		
 		cal.add(Calendar.DAY_OF_MONTH, -1);
@@ -48,28 +48,33 @@ public class TWSE {
 		fetchURL();
 	}
 	
-	private boolean fetchURL() {
-		byte[] ip = {10, (byte) 160, 3, 88};
+	private URLConnection getURLConnection() {
 		InetAddress ia = null;
-		try {
-			ia = InetAddress.getByAddress(ip);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		InetSocketAddress isa = new InetSocketAddress(ia, 8080);
-		Proxy proxy = new Proxy(Proxy.Type.HTTP, isa);
+		byte[] proxyIp = { 10, (byte) 160, 3, 88 };
+		URLConnection urlc = null;
 		URL url = null;
+
 		try {
 			url = new URL(baseUrl);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		URLConnection urlc = null;
-		try {
-			urlc = url.openConnection(proxy);
+			
+			if (InetAddress.getLocalHost().getHostAddress().startsWith("10.144")) {
+				ia = InetAddress.getByAddress(proxyIp);
+				InetSocketAddress isa = new InetSocketAddress(ia, 8080);
+				Proxy proxy = new Proxy(Proxy.Type.HTTP, isa);
+				urlc = url.openConnection(proxy);
+			} else {
+				urlc = url.openConnection();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		return urlc;
+	}
+	
+	private boolean fetchURL() {
+		URLConnection urlc = getURLConnection();
+		
 		InputStreamReader isr = null;
 		try {
 			isr = new InputStreamReader(urlc.getInputStream(), "BIG5");
@@ -96,14 +101,14 @@ public class TWSE {
 						continue;
 					} else {
 						InstitutionDaily inst = new InstitutionDaily();
-						data = content.split(",");
-System.out.println(content+" "+data[2]);
-System.out.println(data[2]+" "+data[2].replace("\"", "")+" "+data[2].replace("\"", "").replace(",", ""));
+						data = content.split("\"?,?\"");
+//System.out.println(content);
+//for (String s : data) System.out.println(s.replace(",", ""));
 						inst.setTradingDate(tradingDate);
-						inst.setItem(data[0].replace("\"", "").replace(",", ""));
-						inst.setTotalBuy(data[1].replace("\"", "").replace(",", ""));
-						inst.setTotalSell(data[2].replace("\"", "").replace(",", ""));
-						inst.setDifference(data[3].replace("\"", "").replace(",", ""));
+						inst.setItem(data[0].replace(",", ""));
+						inst.setTotalBuy(data[1].replace(",", ""));
+						inst.setTotalSell(data[2].replace(",", ""));
+						inst.setDifference(data[3].replace(",", ""));
 //System.out.println(inst.getTradingDate()+" "+inst.getItem()+" "+inst.getTotalBuy()+" "+inst.getTotalSell()+" "+inst.getDifference());
 						alInst.add(inst);
 					}

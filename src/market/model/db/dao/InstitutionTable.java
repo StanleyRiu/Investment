@@ -32,12 +32,12 @@ public class InstitutionTable extends Table {
 			try {
 				 pstmt = con.prepareStatement(sql);
 				 java.util.Date d = df.parse(inst.getTradingDate());
-
+//System.out.println(inst.getTradingDate()+" "+d.toString());
 				 pstmt.setDate(1, new Date(d.getTime()));
 				 pstmt.setString(2, inst.getItem());
-				 pstmt.setInt(3, Integer.parseInt(inst.getTotalBuy()));
-				 pstmt.setInt(4, Integer.parseInt(inst.getTotalSell()));
-				 pstmt.setInt(5, Integer.parseInt(inst.getDifference()));
+				 pstmt.setLong(3, Long.parseLong(inst.getTotalBuy()));
+				 pstmt.setLong(4, Long.parseLong(inst.getTotalSell()));
+				 pstmt.setLong(5, Long.parseLong(inst.getDifference()));
 				 
 				 pstmt.executeUpdate();
 
