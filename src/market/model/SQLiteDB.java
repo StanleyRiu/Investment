@@ -13,6 +13,7 @@ public class SQLiteDB {
 		
 		try {
 			// STEP 2: Register JDBC driver
+			// load the sqlite-JDBC driver using the current class loader
 			Class.forName(JDBC_DRIVER);
 			this.con = this.getConnection();
 		} catch (ClassNotFoundException e) {
@@ -28,6 +29,7 @@ public class SQLiteDB {
 		try {
 			// STEP 3: Open a connection
 			conn = DriverManager.getConnection("jdbc:sqlite:"+dbURL);
+			//conn.setAutoCommit(false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
