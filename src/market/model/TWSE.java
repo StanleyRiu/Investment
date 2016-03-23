@@ -5,14 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 
 import market.model.dao.InstitutionDaily;
 
@@ -36,7 +39,7 @@ public class TWSE {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		
-		//cal.add(Calendar.DAY_OF_MONTH, -1);
+		cal.add(Calendar.DAY_OF_MONTH, -1);
 		String tradingDay = sdf.format(cal.getTime());
 		
 		cal.add(Calendar.DAY_OF_MONTH, -1);
@@ -56,8 +59,26 @@ public class TWSE {
 
 		try {
 			url = new URL(baseUrl);
+			boolean bIntranet = false;
+			Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
+			while (ni.hasMoreElements()) {
+				Enumeration<InetAddress> eia = ni.nextElement().getInetAddresses();
+				while (eia.hasMoreElements()) {
+					if (eia.nextElement().getHostAddress().startsWith("10.144")) {
+						bIntranet = true;
+					}
+					if (bIntranet) break;
+				}
+				if (bIntranet) break;
+				/*
+				List<InterfaceAddress> lia = ni.nextElement().getInterfaceAddresses();
+				Iterator<InterfaceAddress> it = lia.iterator();
+				while (it.hasNext())
+					System.out.println(it.next().getAddress().getHostAddress());
+					*/
+			}
 			
-			if (InetAddress.getLocalHost().getHostAddress().startsWith("10.144")) {
+			if (bIntranet) {
 				ia = InetAddress.getByAddress(proxyIp);
 				InetSocketAddress isa = new InetSocketAddress(ia, 8080);
 				Proxy proxy = new Proxy(Proxy.Type.HTTP, isa);

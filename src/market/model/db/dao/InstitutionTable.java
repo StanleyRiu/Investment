@@ -2,7 +2,9 @@ package market.model.db.dao;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -40,7 +42,13 @@ public class InstitutionTable extends Table {
 				 pstmt.setLong(5, Long.parseLong(inst.getDifference()));
 				 
 				 pstmt.executeUpdate();
-
+				 
+				 sql = "select trading_date from institution";
+				 Statement stmt = con.createStatement();
+				 ResultSet rs = stmt.executeQuery(sql);
+				 while (rs.next()) {
+					 System.out.println(rs.getDate("trading_date").toString());
+				 }
 			} catch (SQLException | ParseException e) {
 				e.printStackTrace();
 			}
