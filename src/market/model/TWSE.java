@@ -10,14 +10,20 @@ import java.net.NetworkInterface;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
 import market.model.dao.InstitutionDaily;
+import market.model.db.dao.Table;
 
 public class TWSE {
 	//http://www.twse.com.tw/ch/trading/fund/BFI82U/BFI82U_print.php?begin_date=20160318&end_date=20160317&report_type=day&language=ch&save=csv
@@ -34,23 +40,32 @@ public class TWSE {
 	}
 	
 	public void fetchInstitution() {
-		//StringBuilder sb = new StringBuilder(baseUrl);
+		Long date = Table.getLastFetchDate("institution");
 		
-		Calendar cal = Calendar.getInstance();
+		//StringBuilder sb = new StringBuilder(baseUrl);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		
-		cal.add(Calendar.DAY_OF_MONTH, -1);
-		String tradingDay = sdf.format(cal.getTime());
-		
-		cal.add(Calendar.DAY_OF_MONTH, -1);
-		String lastTradingDay = sdf.format(cal.getTime());
-		
-		baseUrl = baseUrl.replace("20160318", tradingDay);
-		baseUrl = baseUrl.replace("20160317", lastTradingDay);
-		//System.out.println(baseUrl);
-		fetchURL();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date(date));
+
+		Calendar rightNow = Calendar.getInstance();
+
+		while (cal.before(rightNow)) {
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			String tradingDay = sdf.format(cal.getTime());
+			
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			String lastTradingDay = sdf.format(cal.getTime());
+			
+			baseUrl = baseUrl.replace("20160318", tradingDay);
+			baseUrl = baseUrl.replace("20160317", lastTradingDay);
+			//System.out.println(baseUrl);
+			fetchURL();
+
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+		}
 	}
-	
+
 	private URLConnection getURLConnection() {
 		InetAddress ia = null;
 		byte[] proxyIp = { 10, (byte) 160, 3, 88 };

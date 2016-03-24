@@ -1,6 +1,10 @@
 package market.model.db.dao;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import market.model.SQLiteDB;
 
 public class Table {
@@ -12,4 +16,21 @@ public class Table {
 		con = sqlite.getConnection();
 	}
 	
+	public static long getLastFetchDate(String tableName) {
+		Connection con = null;
+		SQLiteDB sqlite = null;
+		sqlite = new SQLiteDB(tableName);
+		con = sqlite.getConnection();
+		try {
+			String sql = "select max(trading_date) from "+tableName;
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next())
+				return rs.getLong(0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 }
