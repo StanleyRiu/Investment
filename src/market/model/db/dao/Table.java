@@ -19,17 +19,26 @@ public class Table {
 	public static long getLastFetchDate(String tableName) {
 		Connection con = null;
 		SQLiteDB sqlite = null;
-		sqlite = new SQLiteDB(tableName);
+		sqlite = new SQLiteDB("Investment.sqlite");
 		con = sqlite.getConnection();
+		Statement stmt = null;
 		try {
 			String sql = "select max(trading_date) from "+tableName;
-			Statement stmt = con.createStatement();
+			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next())
-				return rs.getLong(0);
+				return rs.getLong(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+		
 		return 0;
 	}
 
