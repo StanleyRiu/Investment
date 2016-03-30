@@ -26,6 +26,13 @@ import market.model.dao.InstitutionDaily;
 import market.model.db.dao.Table;
 
 public class TWSE {
+	private Calendar cal = Calendar.getInstance();
+	private Calendar rightNow = Calendar.getInstance();
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	
+	private String tradingDay;
+	private String lastTradingDay;
+	
 	//http://www.twse.com.tw/ch/trading/fund/BFI82U/BFI82U_print.php?begin_date=20160318&end_date=20160317&report_type=day&language=ch&save=csv
 	//http://www.twse.com.tw/ch/trading/fund/BFI82U/BFI82U_print.php?begin_date=20160318&end_date=&report_type=day&language=en&save=csv
 	private String baseUrl = "http://www.twse.com.tw/ch/trading/fund/BFI82U/BFI82U_print.php?begin_date=20160318&end_date=20160317&report_type=day&language=en&save=csv";
@@ -41,39 +48,35 @@ public class TWSE {
 	
 	public void fetchInstitution() {
 		Long date = Table.getLastFetchDate("institution");
+		if (date == 0) date =  1458144000000L;
 		
-		//StringBuilder sb = new StringBuilder(baseUrl);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date(date));
+		StringBuilder sb = null;
 
-		Calendar rightNow = Calendar.getInstance();
+		cal.setTime(new Date(date));
 
 		while (cal.before(rightNow)) {
 			cal.add(Calendar.DAY_OF_MONTH, 1);
-			String tradingDay = sdf.format(cal.getTime());
+			tradingDay = sdf.format(cal.getTime());
 			
 			cal.add(Calendar.DAY_OF_MONTH, -1);
-			String lastTradingDay = sdf.format(cal.getTime());
-			
-			baseUrl = baseUrl.replace("20160318", tradingDay);
-			baseUrl = baseUrl.replace("20160317", lastTradingDay);
-			//System.out.println(baseUrl);
-			fetchURL();
+			lastTradingDay = sdf.format(cal.getTime());
+
+			sb = new StringBuilder(baseUrl.replace("20160318", tradingDay).replace("20160317", lastTradingDay));
+			System.out.println(sb.toString());
+			fetchURL(sb.toString());
 
 			cal.add(Calendar.DAY_OF_MONTH, 1);
 		}
 	}
 
-	private URLConnection getURLConnection() {
+	private URLConnection getURLConnection(String targetUrl) {
 		InetAddress ia = null;
 		byte[] proxyIp = { 10, (byte) 160, 3, 88 };
 		URLConnection urlc = null;
 		URL url = null;
 
 		try {
-			url = new URL(baseUrl);
+			url = new URL(targetUrl);
 			boolean bIntranet = false;
 			Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
 			while (ni.hasMoreElements()) {
@@ -108,8 +111,8 @@ public class TWSE {
 		return urlc;
 	}
 	
-	private boolean fetchURL() {
-		URLConnection urlc = getURLConnection();
+	private boolean fetchURL(String targetUrl) {
+		URLConnection urlc = getURLConnection(targetUrl);
 		
 		InputStreamReader isr = null;
 		try {
@@ -123,8 +126,8 @@ public class TWSE {
 			String tradingDate = null;
 			for (int i=0; br.ready(); i++) {
 				String content = br.readLine();
-				if (content.contains("æŸ¥ç„¡è³‡æ–™")) {
-					System.err.println("æŸ¥ç„¡è³‡æ–™");
+				if (content.contains("Data Not Found")) {
+					System.out.println("¬dµL¸ê®Æ:"+this.tradingDay);
 					return false;
 				}
 				else {

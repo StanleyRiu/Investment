@@ -24,11 +24,12 @@ public class InstitutionTable extends Table {
 		InstitutionDaily inst = null;
 		Iterator<InstitutionDaily> it = alInst.iterator();
 		DateFormat df = DateFormat.getDateInstance();
+		String sql = null;
 		
 		while (it.hasNext()) {
 			inst = it.next();
 			
-			String sql = "insert into institution (trading_date, item, total_buy, total_sell, difference) values (?, ?, ?, ?, ?)";
+			sql = "insert into institution (trading_date, item, total_buy, total_sell, difference) values (?, ?, ?, ?, ?)";
 			PreparedStatement pstmt = null;
 			
 			try {
@@ -43,15 +44,19 @@ public class InstitutionTable extends Table {
 				 
 				 pstmt.executeUpdate();
 				 
-				 sql = "select trading_date from institution";
-				 Statement stmt = con.createStatement();
-				 ResultSet rs = stmt.executeQuery(sql);
-				 while (rs.next()) {
-					 System.out.println(rs.getDate("trading_date").toString());
-				 }
 			} catch (SQLException | ParseException e) {
 				e.printStackTrace();
 			}
+		}
+		try {
+			sql = "select trading_date from institution";
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+			System.out.println(rs.getDate("trading_date").toString());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return 0;
 	}
