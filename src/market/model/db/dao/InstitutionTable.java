@@ -36,7 +36,8 @@ public class InstitutionTable extends Table {
 				 pstmt = con.prepareStatement(sql);
 				 java.util.Date d = df.parse(inst.getTradingDate());
 //System.out.println(inst.getTradingDate()+" "+d.toString());
-				 pstmt.setDate(1, new Date(d.getTime()));
+				 //pstmt.setDate(1, new Date(d.getTime()));
+				 pstmt.setLong(1, d.getTime());
 				 pstmt.setString(2, inst.getItem());
 				 pstmt.setLong(3, Long.parseLong(inst.getTotalBuy()));
 				 pstmt.setLong(4, Long.parseLong(inst.getTotalSell()));
@@ -47,16 +48,6 @@ public class InstitutionTable extends Table {
 			} catch (SQLException | ParseException e) {
 				e.printStackTrace();
 			}
-		}
-		try {
-			sql = "select trading_date from institution";
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-			System.out.println(rs.getDate("trading_date").toString());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return 0;
 	}

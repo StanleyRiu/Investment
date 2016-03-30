@@ -62,7 +62,7 @@ public class TWSE {
 			lastTradingDay = sdf.format(cal.getTime());
 
 			sb = new StringBuilder(baseUrl.replace("20160318", tradingDay).replace("20160317", lastTradingDay));
-			System.out.println(sb.toString());
+			//System.out.println(sb.toString());
 			fetchURL(sb.toString());
 
 			cal.add(Calendar.DAY_OF_MONTH, 1);
@@ -127,7 +127,7 @@ public class TWSE {
 			for (int i=0; br.ready(); i++) {
 				String content = br.readLine();
 				if (content.contains("Data Not Found")) {
-					System.out.println("查無資料:"+this.tradingDay);
+					//System.out.println("Data Not Found:"+this.tradingDay);
 					return false;
 				}
 				else {

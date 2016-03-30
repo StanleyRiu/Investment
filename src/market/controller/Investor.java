@@ -4,6 +4,7 @@ import java.util.Date;
 
 import market.model.TWSE;
 import market.model.db.dao.InstitutionTable;
+import market.view.MarketInfo;
 
 public class Investor {
 
@@ -22,6 +23,10 @@ public class Investor {
 		InstitutionTable inst = new InstitutionTable();
 		inst.insertInstitution(twse.getAlInst());
 		
+		MarketInfo mi = new MarketInfo();
+		mi.showInstitution();
+		
+		//System.out.println("done");
 	}
 
 }
