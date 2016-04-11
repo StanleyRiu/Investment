@@ -7,7 +7,7 @@ import java.util.List;
 public class Dividend extends FileHandler {
 	private int year = 105;
 	private DividendDAO dividendDao;
-	private List<DividendDAO> dividendList = new ArrayList<DividendDAO>();
+	private ArrayList<DividendDAO> dividendList = new ArrayList<DividendDAO>();
 	
 	public static void main(String[] args) {
 		if (args.length == 0) {
@@ -16,26 +16,36 @@ public class Dividend extends FileHandler {
 		}
 		
 		Dividend dividend = new Dividend(args[0]);
-		dividend.importCSV();
-		
-		
+		dividend.doImport();
 	}
 
 	public Dividend(String filename) {
 		super(filename);
 	}
-
+	public void doImport() {
+		this.importCSV();
+		DividendTable dividendTable = new DividendTable();
+		dividendTable.insertDividend(dividendList);
+	
+	}
 	public void importCSV() {
-		dividendDao = new DividendDAO();
 		String line = null;
 		int lineNum = 0;
 		try {
 			while ((line = br.readLine()) != null) {
+				dividendDao = new DividendDAO();
 				if (lineNum++ == 0) continue;
 				String[] elements = line.split(",");
 				String[] corp = elements[0].split(" - ");
 				float cash = Float.parseFloat(elements[1])+Float.parseFloat(elements[2]);
 				float stock = Float.parseFloat(elements[3])+Float.parseFloat(elements[4]);
+				dividendDao.setYear(year);
+				dividendDao.setId(corp[0].trim());
+				dividendDao.setName(corp[1].trim());
+				dividendDao.setCash(cash);
+				dividendDao.setStock(stock);
+				
+				dividendList.add(dividendDao);
 /*
 				for(int i=0; i<data.length; i++) {
 					if (i==0) {
@@ -53,35 +63,4 @@ public class Dividend extends FileHandler {
 		}
 	}
 
-	private class DividendDAO {
-		private String id;
-		private String name;
-		private float cash;
-		private float stock;
-
-		public String getId() {
-			return id;
-		}
-		public void setId(String id) {
-			this.id = id;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public float getCash() {
-			return cash;
-		}
-		public void setCash(float cash) {
-			this.cash = cash;
-		}
-		public float getStock() {
-			return stock;
-		}
-		public void setStock(float stock) {
-			this.stock = stock;
-		}
-	}
 }

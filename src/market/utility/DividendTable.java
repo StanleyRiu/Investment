@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import market.model.dao.InstitutionDaily;
 import market.model.db.dao.Table;
 
 public class DividendTable extends Table {
@@ -21,33 +20,31 @@ public class DividendTable extends Table {
 
 	
 	//public int insertInstitution(Timestamp tradingDate, String item, int totalBuy, int totalSell, int difference) {
-	public int insertInstitution(ArrayList<InstitutionDaily> alInst) {
-		InstitutionDaily inst = null;
-		Iterator<InstitutionDaily> it = alInst.iterator();
+	public int insertDividend(ArrayList<DividendDAO> alInst) {
+		market.utility.DividendDAO dividend = null;
+		Iterator<DividendDAO> it = alInst.iterator();
 		DateFormat df = DateFormat.getDateInstance();
 		String sql = null;
 		
 		while (it.hasNext()) {
-			inst = it.next();
+			dividend = it.next();
 			
-			sql = "insert into institution (trading_date, item, total_buy, total_sell, difference) values (?, ?, ?, ?, ?)";
+			sql = "insert into dividend (year, id, name, cash, stock) values (?, ?, ?, ?, ?)";
 			PreparedStatement pstmt = null;
 			
 			try {
 				 pstmt = con.prepareStatement(sql);
-				 java.util.Date d = df.parse(inst.getTradingDate());
-//System.out.println(inst.getTradingDate()+" "+d.toString());
-				 //pstmt.setDate(1, new Date(d.getTime()));
-				 pstmt.setLong(1, d.getTime());
-				 pstmt.setString(2, inst.getItem());
-				 pstmt.setLong(3, Long.parseLong(inst.getTotalBuy()));
-				 pstmt.setLong(4, Long.parseLong(inst.getTotalSell()));
-				 pstmt.setLong(5, Long.parseLong(inst.getDifference()));
+				 pstmt.setInt(1, dividend.getYear());
+				 pstmt.setString(2, dividend.getId());
+				 pstmt.setString(3, dividend.getName());
+				 pstmt.setFloat(4, dividend.getCash());
+				 pstmt.setFloat(5, dividend.getStock());
 				 
 				 pstmt.executeUpdate();
 				 
-			} catch (SQLException | ParseException e) {
+			} catch (SQLException e) {
 				e.printStackTrace();
+				System.out.println(dividend.getYear()+", "+dividend.getId());
 			}
 		}
 		return 0;
