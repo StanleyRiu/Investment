@@ -2,6 +2,7 @@ package market.utility;
 
 public class DividendDAO {
 	private int year;
+	private String marketType;
 	private String id;
 	private String name;
 	private float cash;
@@ -18,6 +19,12 @@ public class DividendDAO {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getMarketType() {
+		return marketType;
+	}
+	public void setMarketType(String marketType) {
+		this.marketType = marketType;
 	}
 	public String getName() {
 		return name;

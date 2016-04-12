@@ -25,7 +25,7 @@ import java.util.List;
 import market.model.dao.InstitutionDaily;
 import market.model.db.dao.Table;
 
-public class TWSE {
+public class TWSE extends Network {
 	private Calendar cal = Calendar.getInstance();
 	private Calendar rightNow = Calendar.getInstance();
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -69,58 +69,8 @@ public class TWSE {
 		}
 	}
 
-	private URLConnection getURLConnection(String targetUrl) {
-		InetAddress ia = null;
-		byte[] proxyIp = { 10, (byte) 160, 3, 88 };
-		URLConnection urlc = null;
-		URL url = null;
-
-		try {
-			url = new URL(targetUrl);
-			boolean bIntranet = false;
-			Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
-			while (ni.hasMoreElements()) {
-				Enumeration<InetAddress> eia = ni.nextElement().getInetAddresses();
-				while (eia.hasMoreElements()) {
-					if (eia.nextElement().getHostAddress().startsWith("10.144")) {
-						bIntranet = true;
-					}
-					if (bIntranet) break;
-				}
-				if (bIntranet) break;
-				/*
-				List<InterfaceAddress> lia = ni.nextElement().getInterfaceAddresses();
-				Iterator<InterfaceAddress> it = lia.iterator();
-				while (it.hasNext())
-					System.out.println(it.next().getAddress().getHostAddress());
-					*/
-			}
-			
-			if (bIntranet) {
-				ia = InetAddress.getByAddress(proxyIp);
-				InetSocketAddress isa = new InetSocketAddress(ia, 8080);
-				Proxy proxy = new Proxy(Proxy.Type.HTTP, isa);
-				urlc = url.openConnection(proxy);
-			} else {
-				urlc = url.openConnection();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return urlc;
-	}
-	
-	private boolean fetchURL(String targetUrl) {
-		URLConnection urlc = getURLConnection(targetUrl);
-		
-		InputStreamReader isr = null;
-		try {
-			isr = new InputStreamReader(urlc.getInputStream(), "BIG5");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		BufferedReader br = new BufferedReader(isr);
+	private boolean getInstitutionDaily(String targetUrl) {
+		BufferedReader br = new BufferedReader(fetchURL(targetUrl));
 		
 		try {
 			String tradingDate = null;

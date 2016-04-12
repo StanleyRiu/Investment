@@ -29,16 +29,17 @@ public class DividendTable extends Table {
 		while (it.hasNext()) {
 			dividend = it.next();
 			
-			sql = "insert into dividend (year, id, name, cash, stock) values (?, ?, ?, ?, ?)";
+			sql = "insert into dividend (year, market_type, id, name, cash, stock) values (?, ?, ?, ?, ?, ?)";
 			PreparedStatement pstmt = null;
 			
 			try {
 				 pstmt = con.prepareStatement(sql);
 				 pstmt.setInt(1, dividend.getYear());
-				 pstmt.setString(2, dividend.getId());
-				 pstmt.setString(3, dividend.getName());
-				 pstmt.setFloat(4, dividend.getCash());
-				 pstmt.setFloat(5, dividend.getStock());
+				 pstmt.setString(2, dividend.getMarketType());
+				 pstmt.setString(3, dividend.getId());
+				 pstmt.setString(4, dividend.getName());
+				 pstmt.setFloat(5, dividend.getCash());
+				 pstmt.setFloat(6, dividend.getStock());
 				 
 				 pstmt.executeUpdate();
 				 

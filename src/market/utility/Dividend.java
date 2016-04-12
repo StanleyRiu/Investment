@@ -5,22 +5,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Dividend extends FileHandler {
-	private int year = 105;
+	private int year;
+	private String marketType;
 	private DividendDAO dividendDao;
 	private ArrayList<DividendDAO> dividendList = new ArrayList<DividendDAO>();
 	
 	public static void main(String[] args) {
-		if (args.length == 0) {
-			System.err.println("Usage: "+System.getProperty("program.name")+" filename.csv");
+		if (args.length != 3) {
+			System.err.println("Usage: "+System.getProperty("program.name")+"year <TSE|OTC> filename.csv");
 			System.exit(0);
 		}
 		
-		Dividend dividend = new Dividend(args[0]);
+		Dividend dividend = new Dividend(args);
 		dividend.doImport();
 	}
 
-	public Dividend(String filename) {
-		super(filename);
+	public Dividend(String[] args) {
+		super(args[2]);
+		this.year = Integer.parseInt(args[0]);
+		this.marketType = args[1];
 	}
 	public void doImport() {
 		this.importCSV();
@@ -40,6 +43,7 @@ public class Dividend extends FileHandler {
 				float cash = Float.parseFloat(elements[1])+Float.parseFloat(elements[2]);
 				float stock = Float.parseFloat(elements[3])+Float.parseFloat(elements[4]);
 				dividendDao.setYear(year);
+				dividendDao.setMarketType(marketType);
 				dividendDao.setId(corp[0].trim());
 				dividendDao.setName(corp[1].trim());
 				dividendDao.setCash(cash);
