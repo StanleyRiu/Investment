@@ -25,7 +25,7 @@ import java.util.List;
 import market.model.dao.InstitutionDaily;
 import market.model.db.dao.Table;
 
-public class TWSE extends Network {
+public class Institution extends Network {
 	private Calendar cal = Calendar.getInstance();
 	private Calendar rightNow = Calendar.getInstance();
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -43,7 +43,7 @@ public class TWSE extends Network {
 		return alInst;
 	}
 
-	public TWSE() {
+	public Institution() {
 	}
 	
 	public void fetchInstitution() {
@@ -63,7 +63,7 @@ public class TWSE extends Network {
 
 			sb = new StringBuilder(baseUrl.replace("20160318", tradingDay).replace("20160317", lastTradingDay));
 			//System.out.println(sb.toString());
-			fetchURL(sb.toString());
+			getInstitutionDaily(sb.toString());
 
 			cal.add(Calendar.DAY_OF_MONTH, 1);
 		}

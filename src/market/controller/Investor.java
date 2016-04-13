@@ -2,7 +2,7 @@ package market.controller;
 
 import java.util.Date;
 
-import market.model.TWSE;
+import market.model.Institution;
 import market.model.db.dao.InstitutionTable;
 import market.view.MarketInfo;
 
@@ -16,7 +16,7 @@ public class Investor {
 		//Date d = new Date(1458576000000L);
 		//System.out.println(d.toString());
 		//System.exit(0);
-		TWSE twse = new TWSE();
+		Institution twse = new Institution();
 		
 		twse.fetchInstitution();
 		
