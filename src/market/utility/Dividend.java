@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dividend extends FileHandler {
+import market.model.Network;
+
+public class Dividend extends Network {
 	private int year;
 	private String marketType;
 	private DividendDAO dividendDao;
 	private ArrayList<DividendDAO> dividendList = new ArrayList<DividendDAO>();
+	private String csvFileName;
 	
 	public static void main(String[] args) {
 		if (args.length != 3) {
@@ -17,25 +20,51 @@ public class Dividend extends FileHandler {
 		}
 		
 		Dividend dividend = new Dividend(args);
-		dividend.doImport();
+		//dividend.doImport(dividend.csvFileName);
 	}
 
 	public Dividend(String[] args) {
-		super(args[2]);
-		this.year = Integer.parseInt(args[0]);
-		this.marketType = args[1];
+		//super(args[2]);
+		//this.year = Integer.parseInt(args[0]);
+		//this.marketType = args[1];
 	}
-	public void doImport() {
-		this.importCSV();
+	
+	public void fetchDividendCSV() {
+		/*
+		 * 
+http://mops.twse.com.tw/server-java/t05st09sub
+x-www-form-urlencoded
+TYPEK=sii
+YEAR=104
+first=
+step=104
+
+http://mops.twse.com.tw/server-java/t105sb02
+x-www-form-urlencoded
+filename=t05st09_new_20160417_210745368.csv
+firstin=true
+step=10
+
+		 */
+		String url1 = "http://mops.twse.com.tw/server-java/t05st09sub";
+		
+		String url2 = "http://mops.twse.com.tw/server-java/t105sb02";
+		
+		
+	}
+	
+	public void doImport(String filename) {
+		this.importCSV(filename);
 		DividendTable dividendTable = new DividendTable();
 		dividendTable.insertDividend(dividendList);
 	
 	}
-	public void importCSV() {
+	public void importCSV(String filename) {
 		String line = null;
 		int lineNum = 0;
+		FileHandler f = new FileHandler(filename);
 		try {
-			while ((line = br.readLine()) != null) {
+			while ((line = f.br.readLine()) != null) {
 				dividendDao = new DividendDAO();
 				if (lineNum++ == 0) continue;
 				String[] elements = line.split(",");
