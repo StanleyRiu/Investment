@@ -70,7 +70,7 @@ public class Institution extends Network {
 	}
 
 	private boolean getInstitutionDaily(String targetUrl) {
-		BufferedReader br = new BufferedReader(fetchURL(targetUrl));
+		BufferedReader br = new BufferedReader(fetchHttpURL(targetUrl));
 		
 		try {
 			String tradingDate = null;

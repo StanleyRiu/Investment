@@ -2,6 +2,7 @@ package market.model;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -14,10 +15,10 @@ public class Network {
 	public Network() {
 	}
 	
-	private URLConnection getURLConnection(String targetUrl) {
+	public HttpURLConnection getHttpURLConnection(String targetUrl) {
 		InetAddress ia = null;
 		byte[] proxyIp = { 10, (byte) 160, 3, 88 };
-		URLConnection urlc = null;
+		HttpURLConnection hUrlc = null;
 		URL url = null;
 
 		try {
@@ -45,27 +46,31 @@ public class Network {
 				ia = InetAddress.getByAddress(proxyIp);
 				InetSocketAddress isa = new InetSocketAddress(ia, 8080);
 				Proxy proxy = new Proxy(Proxy.Type.HTTP, isa);
-				urlc = url.openConnection(proxy);
+				hUrlc = (HttpURLConnection) url.openConnection(proxy);
 			} else {
-				urlc = url.openConnection();
+				hUrlc = (HttpURLConnection) url.openConnection();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		return urlc;
+		return hUrlc;
 	}
 	
-	public InputStreamReader fetchURL(String targetUrl) {
-		URLConnection urlc = getURLConnection(targetUrl);
+	public InputStreamReader fetchHttpURL(String targetUrl) {
+		HttpURLConnection hUrlc = getHttpURLConnection(targetUrl);
 		
 		InputStreamReader isr = null;
 		try {
-			isr = new InputStreamReader(urlc.getInputStream(), "BIG5");
+			isr = new InputStreamReader(hUrlc.getInputStream(), "BIG5");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		return isr;
+	}
+	
+	public void doPost() {
+		
 	}
 }

@@ -1,6 +1,9 @@
 package market.utility;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +18,7 @@ public class Dividend extends Network {
 	
 	public static void main(String[] args) {
 		if (args.length != 3) {
-			System.err.println("Usage: "+System.getProperty("program.name")+"year <TSE|OTC> filename.csv");
+			System.err.println("Usage: "+System.getProperty("sun.java.command")+" year <TSE|OTC> filename.csv");
 			System.exit(0);
 		}
 		
@@ -49,8 +52,16 @@ step=10
 		String url1 = "http://mops.twse.com.tw/server-java/t05st09sub";
 		
 		String url2 = "http://mops.twse.com.tw/server-java/t105sb02";
-		
-		
+
+		Network net = new Network();
+		HttpURLConnection hUrlc = net.getHttpURLConnection(url1);
+		try {
+			hUrlc.setRequestMethod("POST");
+			hUrlc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			
+		} catch (ProtocolException e) {
+			e.printStackTrace();
+		} 
 	}
 	
 	public void doImport(String filename) {
