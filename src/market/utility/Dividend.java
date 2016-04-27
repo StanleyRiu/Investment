@@ -1,12 +1,9 @@
 package market.utility;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
-
 import market.model.Network;
 
 public class Dividend extends Network {
@@ -17,13 +14,15 @@ public class Dividend extends Network {
 	private String csvFileName;
 	
 	public static void main(String[] args) {
+		/*
 		if (args.length != 3) {
 			System.err.println("Usage: "+System.getProperty("sun.java.command")+" year <TSE|OTC> filename.csv");
 			System.exit(0);
 		}
-		
+		*/
 		Dividend dividend = new Dividend(args);
 		//dividend.doImport(dividend.csvFileName);
+		dividend.fetchDividendCSV();
 	}
 
 	public Dividend(String[] args) {
@@ -40,7 +39,7 @@ x-www-form-urlencoded
 TYPEK=sii
 YEAR=104
 first=
-step=104
+step=1
 
 http://mops.twse.com.tw/server-java/t105sb02
 x-www-form-urlencoded
@@ -54,14 +53,17 @@ step=10
 		String url2 = "http://mops.twse.com.tw/server-java/t105sb02";
 
 		Network net = new Network();
-		HttpURLConnection hUrlc = net.getHttpURLConnection(url1);
+	    String content = null;
 		try {
-			hUrlc.setRequestMethod("POST");
-			hUrlc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			
-		} catch (ProtocolException e) {
+			content = "TYPEK=" + URLEncoder.encode("sii", "BIG5") +
+			"&YEAR=" + URLEncoder.encode("104", "BIG5") +
+			"&first=" + URLEncoder.encode("", "BIG5") +
+			"&step=" + URLEncoder.encode("1", "BIG5");
+		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-		} 
+		}
+
+		net.doPost(url1, content);
 	}
 	
 	public void doImport(String filename) {
