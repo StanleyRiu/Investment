@@ -90,10 +90,10 @@ public class Network {
 		InputStreamReader isr = null;
 		BufferedReader br = null;
 		StringBuilder sb = new StringBuilder();
-		if (this.hUrlc == null)
-			this.hUrlc = this.getHttpURLConnection(url);
+		hUrlc = getHttpURLConnection(url);
 		try {
 			DataOutputStream dos = null;
+			hUrlc.setRequestMethod("POST");
 			// Let the run-time system (RTS) know that we want input.
 			hUrlc.setDoInput(true);
 			// Let the RTS know that we want to do output.
@@ -112,14 +112,22 @@ public class Network {
 			isr = new InputStreamReader(is);
 			br = new BufferedReader(isr);
 			String line = null;
+			int count = 0;
 			while ((line = br.readLine()) != null) {
-				sb.append(line).append("\r");
+				count++;
+				sb.append(line).append(System.getProperty("line.separator"));
+				//System.out.println(line);
 			}
+			//System.out.println("total lines = "+ count);
 			br.close();
 			isr.close();
 			is.close();
+			hUrlc.disconnect();
+
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			
 		}
 		return sb;
 	}

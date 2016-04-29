@@ -1,9 +1,12 @@
 package market.utility;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -60,19 +63,22 @@ public class Dividend extends Network {
 		}
 
 		StringBuilder sb = net.doPost(url1, content);
-		String[] lines = sb.toString().split("\\r?\\n");
+		String[] lines = sb.toString().split(System.getProperty("line.separator"));
+
 		for (String line : lines) {
 			if (line.contains("filename")) {
 				String[] pieces = line.split("'");
-				this.csvFileName = pieces[5];
+				csvFileName = pieces[5];
 				break;
+				
 			}
 		}
+		
 		//second phrase
 		StringBuilder postData = new StringBuilder();
 		try {
 			Map<String, Object> params = new LinkedHashMap<>();
-			params.put("filename", this.csvFileName);
+			params.put("filename", csvFileName);
 			params.put("firstin", "true");
 			params.put("step", "10");
 			for (Map.Entry<String, Object> param : params.entrySet()) {
@@ -87,11 +93,27 @@ public class Dividend extends Network {
 		}
 
 		sb = net.doPost(url2, postData.toString());
-		lines = sb.toString().split("\\r?\\n");
-		for (String line : lines) {
-			System.out.println(line);
+		lines = sb.toString().split(System.getProperty("line.separator"));
+		int count = 0;
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new File("C:\\Users\\Stanley\\Downloads\\dividend.csv"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
+		for (String line : lines) {
+			pw.println(line);
+			count++;
+			String[] pieces = line.split(",");
+			for (int i = 0; i < pieces.length; i++) {
+				if (pieces[0].replace("\"", "").matches("^\\d{4,}.+")) {
+					
+				}
+			}
+		}
+		pw.flush();
+		pw.close();
 	}
 
 	public void doImport(String filename) {
