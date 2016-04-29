@@ -1,6 +1,9 @@
 package market.utility;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -48,14 +51,30 @@ public class Dividend extends Network {
 		String url2 = "http://mops.twse.com.tw/server-java/t105sb02";
 
 		Network net = new Network();
-		/*
+		String content = null;
+		try {
+			content = "TYPEK=" + URLEncoder.encode("sii", "BIG5") + "&YEAR=" + URLEncoder.encode("104", "BIG5")
+					+ "&first=" + URLEncoder.encode("", "BIG5") + "&step=" + URLEncoder.encode("1", "BIG5");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		StringBuilder sb = net.doPost(url1, content);
+		String[] lines = sb.toString().split("\\r?\\n");
+		for (String line : lines) {
+			if (line.contains("filename")) {
+				String[] pieces = line.split("'");
+				this.csvFileName = pieces[5];
+				break;
+			}
+		}
+		//second phrase
+		StringBuilder postData = new StringBuilder();
 		try {
 			Map<String, Object> params = new LinkedHashMap<>();
-			params.put("TYPEK", "sii");
-			params.put("YEAR", "104");
-			params.put("first", "");
-			params.put("step", "1");
-			StringBuilder postData = new StringBuilder();
+			params.put("filename", this.csvFileName);
+			params.put("firstin", "true");
+			params.put("step", "10");
 			for (Map.Entry<String, Object> param : params.entrySet()) {
 				if (postData.length() != 0)	postData.append('&');
 				postData.append(URLEncoder.encode(param.getKey(), "BIG5"));
@@ -66,16 +85,13 @@ public class Dividend extends Network {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		*/
-		String content = null;
-		try {
-			content = "TYPEK=" + URLEncoder.encode("sii", "BIG5") + "&YEAR=" + URLEncoder.encode("104", "BIG5")
-					+ "&first=" + URLEncoder.encode("", "BIG5") + "&step=" + URLEncoder.encode("1", "BIG5");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+
+		sb = net.doPost(url2, postData.toString());
+		lines = sb.toString().split("\\r?\\n");
+		for (String line : lines) {
+			System.out.println(line);
 		}
 
-		net.doPost(url1, content);
 	}
 
 	public void doImport(String filename) {

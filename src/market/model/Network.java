@@ -1,9 +1,13 @@
 package market.model;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -14,6 +18,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.CharBuffer;
 import java.util.Enumeration;
 
 public class Network {
@@ -80,13 +85,15 @@ public class Network {
 		return isr;
 	}
 
-	public void doPost(String url, String content) {
+	public StringBuilder doPost(String url, String content) {
+		InputStream is = null;
+		InputStreamReader isr = null;
+		BufferedReader br = null;
+		StringBuilder sb = new StringBuilder();
 		if (this.hUrlc == null)
 			this.hUrlc = this.getHttpURLConnection(url);
 		try {
-
 			DataOutputStream dos = null;
-			BufferedReader br = null;
 			// Let the run-time system (RTS) know that we want input.
 			hUrlc.setDoInput(true);
 			// Let the RTS know that we want to do output.
@@ -101,16 +108,19 @@ public class Network {
 			dos.flush();
 			dos.close();
 			// Get response data.
-			br = new BufferedReader(new InputStreamReader(hUrlc.getInputStream()));
-			String str;
-			while (null != (str = br.readLine())) {
-				System.out.println(str);
+			is = hUrlc.getInputStream();
+			isr = new InputStreamReader(is);
+			br = new BufferedReader(isr);
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				sb.append(line).append("\r");
 			}
 			br.close();
-
+			isr.close();
+			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		return sb;
 	}
 }
