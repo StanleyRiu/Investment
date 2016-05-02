@@ -44,7 +44,7 @@ public class DividendTable extends Table {
 				 pstmt.executeUpdate();
 				 
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				System.out.println(dividend.getYear()+", "+dividend.getId());
 			}
 		}

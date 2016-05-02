@@ -7,24 +7,24 @@ public class DividendDAO {
 	private String name;
 	private float cash;
 	private float stock;
-
+	
 	public int getYear() {
 		return year;
 	}
 	public void setYear(int year) {
 		this.year = year;
 	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
 	public String getMarketType() {
 		return marketType;
 	}
 	public void setMarketType(String marketType) {
 		this.marketType = marketType;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getName() {
 		return name;
@@ -44,4 +44,5 @@ public class DividendDAO {
 	public void setStock(float stock) {
 		this.stock = stock;
 	}
+
 }
