@@ -17,7 +17,7 @@ import java.util.Map;
 
 import market.model.Network;
 
-public class Dividend extends Network {
+public class Dividend {
 	private DividendDAO dividendDao;
 	private ArrayList<DividendDAO> dividendList;
 	private String csvFileName;
@@ -37,7 +37,7 @@ public class Dividend extends Network {
 	public Dividend() {
 	}
 
-	public void doImport(int lastN) {
+	public void doImport(int lastNyear) {
 		/*
 		 * "sii"	¤W¥«
 		 * "otc"	¤WÂd
@@ -48,7 +48,7 @@ public class Dividend extends Network {
 		Calendar cal = Calendar.getInstance();
 		DividendTable dividendTable = new DividendTable();
 		
-		for (int i = 0; i < lastN; i++) {
+		for (int i = 0; i < lastNyear; i++) {
 			int year = cal.get(Calendar.YEAR)-1911-i;
 			System.out.println("start fetch year "+year);
 			fetchDividendCSV(year, "sii");
