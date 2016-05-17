@@ -1,4 +1,4 @@
-package market.utility;
+package market.model.dao;
 
 public class DividendDAO {
 	private int year;

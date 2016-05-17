@@ -1,11 +1,7 @@
-package market.utility;
+package market.model;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -15,7 +11,9 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import market.model.Network;
+import market.model.dao.DividendDAO;
+import market.model.db.dao.DividendTable;
+import market.utility.FileHandler;
 
 public class Dividend {
 	private DividendDAO dividendDao;
@@ -24,16 +22,6 @@ public class Dividend {
 	private int year;
 	private String marketType;
 	
-	public static void main(String[] args) {
-		/*
-		 * if (args.length != 3) { System.err.println("Usage: "
-		 * +System.getProperty("sun.java.command")+
-		 * " year <TSE|OTC> filename.csv"); System.exit(0); }
-		 */
-		Dividend dividend = new Dividend();
-		dividend.doImport(5);
-	}
-
 	public Dividend() {
 	}
 
@@ -109,7 +97,7 @@ public class Dividend {
 				postData.append('=');
 				postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "BIG5"));
 			}
-			byte[] postDataBytes = postData.toString().getBytes("BIG5");
+//			byte[] postDataBytes = postData.toString().getBytes("BIG5");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

@@ -1,11 +1,7 @@
 package market.model;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,12 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
-import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.nio.CharBuffer;
 import java.util.Enumeration;
 
 public class Network {
@@ -112,13 +104,13 @@ public class Network {
 			isr = new InputStreamReader(is);
 			br = new BufferedReader(isr);
 			String line = null;
-			int count = 0;
+//			int count = 0;
 			while ((line = br.readLine()) != null) {
-				count++;
+//				count++;
 				sb.append(line).append(System.getProperty("line.separator"));
 				//System.out.println(line);
 			}
-			//System.out.println("total lines = "+ count);
+//			System.out.println("total lines = "+ count);
 			br.close();
 			isr.close();
 			is.close();

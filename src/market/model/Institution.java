@@ -2,30 +2,15 @@ package market.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
-import java.net.Proxy;
-import java.net.URL;
-import java.net.URLConnection;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 
 import market.model.dao.InstitutionDaily;
 import market.model.db.dao.Table;
 
-public class Institution extends Network {
+public class Institution {
 	private Calendar cal = Calendar.getInstance();
 	private Calendar rightNow = Calendar.getInstance();
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -70,7 +55,8 @@ public class Institution extends Network {
 	}
 
 	private boolean getInstitutionDaily(String targetUrl) {
-		BufferedReader br = new BufferedReader(fetchHttpURL(targetUrl));
+		Network net = new Network();
+		BufferedReader br = new BufferedReader(net.fetchHttpURL(targetUrl));
 		
 		try {
 			String tradingDate = null;

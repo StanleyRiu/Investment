@@ -1,29 +1,23 @@
-package market.utility;
+package market.model.db.dao;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import market.model.db.dao.Table;
+import market.model.dao.DividendDAO;
 
 public class DividendTable extends Table {
 
 	public DividendTable() {
-		// TODO Auto-generated constructor stub
 	}
 
 	
 	//public int insertInstitution(Timestamp tradingDate, String item, int totalBuy, int totalSell, int difference) {
 	public int insertDividend(ArrayList<DividendDAO> alInst) {
-		market.utility.DividendDAO dividend = null;
+		market.model.dao.DividendDAO dividend = null;
 		Iterator<DividendDAO> it = alInst.iterator();
-		DateFormat df = DateFormat.getDateInstance();
+//		DateFormat df = DateFormat.getDateInstance();
 		String sql = null;
 		
 		while (it.hasNext()) {
