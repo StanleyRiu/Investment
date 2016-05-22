@@ -5,12 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import market.model.dao.DividendDAO;
+import market.model.dao.YieldRateDAO;
 
 public class YieldRate {
 /*
@@ -24,8 +27,22 @@ public class YieldRate {
  * selectType=ALLBUT0999 
  * x-www-form-urlencoded
  */
+	private YieldRateDAO yieldRateDao;
+	private ArrayList<YieldRateDAO> yieldRateList;
 
+	Calendar cal = Calendar.getInstance();
+	SimpleDateFormat sdf = new SimpleDateFormat();
+	
+	public void go() {
+		sdf.applyPattern("yyyy");
+		String yyyy = sdf.format(cal.getTime());
+		sdf.applyPattern("/MM/dd");
+		String MMdd = sdf.format(cal.getTime());
+		
+		System.out.println((Integer.parseInt(yyyy)-1911)+MMdd);
+	}
 	public void fetchDailyQuotes(String qdate) {
+		
 		String url = "http://www.twse.com.tw/ch/trading/exchange/MI_INDEX/MI_INDEX.php";
 
 		Network net = new Network();
@@ -71,17 +88,33 @@ public class YieldRate {
 		StringBuilder sb = net.doPost(url, postData.toString());
 		PrintWriter pw = null;
 		try {
-			pw = new PrintWriter(new File("C:\\Users\\Stanley\\Downloads\\dividend.csv"));
-			pw.print(sb);
-			pw.close();
+			pw = new PrintWriter(new File("C:\\Users\\Stanley\\Downloads\\dailyQuotes.csv"));
+			//pw.print(sb);
+			//pw.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		lines = sb.toString().split("\""+System.getProperty("line.separator"));
-		HashSet<String> hs = new HashSet<String>();
-		dividendList = new ArrayList<DividendDAO>();
-		  
+		String[] lines = sb.toString().split(System.getProperty("line.separator"));
+		//HashSet<String> hs = new HashSet<String>();
+		
+		//dividendList = new ArrayList<DividendDAO>();
+		boolean bPrint = false;
 		for (String line : lines) {
+			if (! bPrint && ! line.contains("√“®È•N∏π")) continue;
+			else bPrint = true;
+			
+			
+			String[] pieces = line.split(",");
+			for (int i = 0; i < pieces.length; i++) {
+				String piece = pieces[i].replace("\"", "").trim();
+				if (i == 0) piece = piece.replace("=", "");
+				if (! (i==0 || i==1 || i==8)) continue;
+				pw.print(piece+"\t");
+				System.out.print(piece+"\t");
+			}
+			pw.println();
+			System.out.println();
+	
 			String[] cells = line.split("\",");
 			//for (String s : cells) s = s.replace("\"", "");
 			if (cells[0].replace("\"", "").matches("^\\d{4,}.+")) {	//filter out useless lines
@@ -89,7 +122,7 @@ public class YieldRate {
 				if (hs.contains(corps[0])) continue;
 				hs.add(corps[0]);
 				
-				dividendDao = new DividendDAO();
+				yieldRateDao = new YieldRateDAO();
 				float cash = 0, stock = 0;
 				try {
 					cash = Float.parseFloat(cells[9].replace("\"", "")) + Float.parseFloat(cells[10].replace("\"", ""));
@@ -98,15 +131,17 @@ public class YieldRate {
 					System.err.println(line);
 					e.printStackTrace();
 				}
-				dividendDao.setYear(year);
-				dividendDao.setMarketType(marketType);
-				dividendDao.setId(corps[0].trim());
-				dividendDao.setName(corps[1].trim());
-				dividendDao.setCash(cash);
-				dividendDao.setStock(stock);
-				dividendList.add(dividendDao);
-				//System.out.println(cash+" "+stock);
+				yieldRateDao.setId(corps[0].trim());
+				yieldRateDao.setName(corps[1].trim());
+				yieldRateDao.setQuoteDate(quoteDate);
+				yieldRateDao.setPrice(price);
+				yieldRateDao.setCash(cash);
+				yieldRateDao.setStock(stock);
+				yieldRateList.add(yieldRateDao);
+		
+				
 			}
 		}
+		pw.close();
 	}
 }

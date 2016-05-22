@@ -2,6 +2,7 @@ package market.controller;
 
 import market.model.Dividend;
 import market.model.Institution;
+import market.model.YieldRate;
 import market.model.db.dao.InstitutionTable;
 import market.view.MarketInfo;
 
@@ -16,7 +17,8 @@ public class Investor {
 		//System.out.println(d.toString());
 		//System.exit(0);
 		Investor investor = new Investor();
-		investor.checkDividend(5);
+		//investor.checkDividend(5);
+		investor.checkYieldRate();
 	}
 	
 	public void checkInstitution() {
@@ -46,6 +48,7 @@ public class Investor {
 	}
 
 	public void checkYieldRate() {
-		
+		YieldRate yr = new YieldRate();
+		yr.fetchDailyQuotes("105/05/20");
 	}
 }
