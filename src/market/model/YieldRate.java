@@ -100,21 +100,25 @@ public class YieldRate {
 		//dividendList = new ArrayList<DividendDAO>();
 		boolean bPrint = false;
 		for (String line : lines) {
-			if (! bPrint && ! line.contains("證券代號")) continue;
-			else bPrint = true;
+		//	if (! bPrint && ! line.contains("證券代號")) continue;
+			//else bPrint = true;
 			
 			
-			String[] pieces = line.split(",");
-			for (int i = 0; i < pieces.length; i++) {
-				String piece = pieces[i].replace("\"", "").trim();
-				if (i == 0) piece = piece.replace("=", "");
-				if (! (i==0 || i==1 || i==8)) continue;
+			String[] pieces = line.split("\",");
+			String piece = null;
+			//piece=pieces[0].replaceAll("=?\"| *", "");
+			if ((piece=pieces[0].replaceAll("=?\"| *", "")).matches("^\\w{4,}")) {
+
+				pieces[1].replace("\"", "").trim();
+				pieces[8].replace("\"", "").trim();
+				
 				pw.print(piece+"\t");
 				System.out.print(piece+"\t");
+				
 			}
-			pw.println();
-			System.out.println();
-	
+			//pw.println();
+			//System.out.println();
+	/*
 			String[] cells = line.split("\",");
 			//for (String s : cells) s = s.replace("\"", "");
 			if (cells[0].replace("\"", "").matches("^\\d{4,}.+")) {	//filter out useless lines
@@ -141,6 +145,7 @@ public class YieldRate {
 		
 				
 			}
+			*/
 		}
 		pw.close();
 	}
