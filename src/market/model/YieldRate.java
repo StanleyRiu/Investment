@@ -95,57 +95,31 @@ public class YieldRate {
 			e.printStackTrace();
 		}
 		String[] lines = sb.toString().split(System.getProperty("line.separator"));
-		//HashSet<String> hs = new HashSet<String>();
-		
-		//dividendList = new ArrayList<DividendDAO>();
-		boolean bPrint = false;
+
 		for (String line : lines) {
-		//	if (! bPrint && ! line.contains("√“®È•N∏π")) continue;
-			//else bPrint = true;
-			
-			
 			String[] pieces = line.split("\",");
 			String piece = null;
 			//piece=pieces[0].replaceAll("=?\"| *", "");
 			if ((piece=pieces[0].replaceAll("=?\"| *", "")).matches("^\\w{4,}")) {
 
-				pieces[1].replace("\"", "").trim();
-				pieces[8].replace("\"", "").trim();
+				String name = pieces[1].replace("\"", "").trim();
+				float price = Float.parseFloat(pieces[8].replace("\"", "").trim());
 				
 				pw.print(piece+"\t");
 				System.out.print(piece+"\t");
 				
-			}
-			//pw.println();
-			//System.out.println();
-	/*
-			String[] cells = line.split("\",");
-			//for (String s : cells) s = s.replace("\"", "");
-			if (cells[0].replace("\"", "").matches("^\\d{4,}.+")) {	//filter out useless lines
-				String[] corps = cells[0].replace("\"", "").split(" - ");
-				if (hs.contains(corps[0])) continue;
-				hs.add(corps[0]);
-				
 				yieldRateDao = new YieldRateDAO();
-				float cash = 0, stock = 0;
-				try {
-					cash = Float.parseFloat(cells[9].replace("\"", "")) + Float.parseFloat(cells[10].replace("\"", ""));
-					stock = Float.parseFloat(cells[12].replace("\"", "")) + Float.parseFloat(cells[13].replace("\"", ""));
-				} catch (NumberFormatException e) {
-					System.err.println(line);
-					e.printStackTrace();
-				}
-				yieldRateDao.setId(corps[0].trim());
-				yieldRateDao.setName(corps[1].trim());
-				yieldRateDao.setQuoteDate(quoteDate);
+				yieldRateDao.setId(piece);
+				yieldRateDao.setName(name);
+				yieldRateDao.setQuoteDate(qdate);
 				yieldRateDao.setPrice(price);
+				float cash = 0;
+				float stock = 0;
 				yieldRateDao.setCash(cash);
 				yieldRateDao.setStock(stock);
 				yieldRateList.add(yieldRateDao);
-		
-				
 			}
-			*/
+				
 		}
 		pw.close();
 	}
