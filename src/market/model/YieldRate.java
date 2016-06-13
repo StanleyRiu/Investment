@@ -28,7 +28,7 @@ public class YieldRate {
  * x-www-form-urlencoded
  */
 	private YieldRateDAO yieldRateDao;
-	private ArrayList<YieldRateDAO> yieldRateList;
+	private ArrayList<YieldRateDAO> yieldRateList = new ArrayList<YieldRateDAO>();
 
 	Calendar cal = Calendar.getInstance();
 	SimpleDateFormat sdf = new SimpleDateFormat();
@@ -96,14 +96,17 @@ public class YieldRate {
 		}
 		String[] lines = sb.toString().split(System.getProperty("line.separator"));
 
+		
 		for (String line : lines) {
 			String[] pieces = line.split("\",");
 			String piece = null;
 			//piece=pieces[0].replaceAll("=?\"| *", "");
 			if ((piece=pieces[0].replaceAll("=?\"| *", "")).matches("^\\w{4,}")) {
-
+try {
 				String name = pieces[1].replace("\"", "").trim();
-				float price = Float.parseFloat(pieces[8].replace("\"", "").trim());
+				
+				float price = 0;
+				if (! pieces[8].replace("\"", "").trim().equals("--")) Float.parseFloat(pieces[8].replace("\"", "").trim());
 				
 				pw.print(piece+"\t");
 				System.out.print(piece+"\t");
@@ -118,6 +121,11 @@ public class YieldRate {
 				yieldRateDao.setCash(cash);
 				yieldRateDao.setStock(stock);
 				yieldRateList.add(yieldRateDao);
+		} catch (Exception e) {
+			System.err.println(line);
+			e.printStackTrace();
+			e.getMessage();
+		}
 			}
 				
 		}
